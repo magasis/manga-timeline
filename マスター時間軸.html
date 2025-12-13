@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マンガ マスター時間軸</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 20px 0;
+            color: #555;
+        }
+
+        /* 7列構造: 本編 | 夏の罠 | タンク | 教授 | 校長 | 正太郎 | Day */
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 80px;
+            max-width: 2200px;
+            margin: 0 auto;
+            gap: 6px;
+        }
+
+        .row {
+            display: contents;
+        }
+
+        /* ヘッダー */
+        .header {
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #fff;
+        }
+
+        .header-main {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .header-summer {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .header-tank {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .header-professor {
+            background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+        }
+
+        .header-principal {
+            background: linear-gradient(135deg, #c31432 0%, #240b36 100%);
+        }
+
+        .header-shotaro {
+            background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+        }
+
+        .header-day {
+            background: #333;
+        }
+
+        /* セル */
+        .cell {
+            padding: 6px;
+            min-height: 50px;
+        }
+
+        .cell-day {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 12px;
+        }
+
+        .day-marker {
+            background: #333;
+            color: #fff;
+            padding: 5px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+
+        .day-marker.highlight {
+            background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+        }
+
+        /* イベントボックス */
+        .event {
+            background: #fff;
+            border-radius: 8px;
+            padding: 8px;
+            border-left: 4px solid #999;
+            margin-bottom: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 0.85em;
+        }
+
+        .event.main {
+            border-left-color: #667eea;
+        }
+
+        .event.summer {
+            border-left-color: #f5576c;
+        }
+
+        .event.tank {
+            border-left-color: #11998e;
+        }
+
+        .event.professor {
+            border-left-color: #8E2DE2;
+        }
+
+        .event.principal {
+            border-left-color: #c31432;
+        }
+
+        .event.shotaro {
+            border-left-color: #3a7bd5;
+        }
+
+        .event.past {
+            border-left-color: #ff7043;
+            background: #fff8e1;
+        }
+
+        .event-title {
+            font-weight: bold;
+            margin-bottom: 3px;
+            font-size: 0.9em;
+        }
+
+        .event-desc {
+            font-size: 0.8em;
+            color: #666;
+            line-height: 1.3;
+        }
+
+        .event-source {
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.65em;
+            margin-top: 3px;
+            color: #333;
+        }
+
+        .period-note {
+            font-size: 0.8em;
+            color: #888;
+            font-style: italic;
+            text-align: center;
+            padding: 8px;
+        }
+
+        /* 期間帯スタイル */
+        .period-band-row {
+            display: contents;
+        }
+
+        .period-band {
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 0.9em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+        }
+
+        .period-band.main {
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.3) 100%);
+            border-color: #667eea;
+            color: #4a4a8a;
+        }
+
+        .period-band.summer {
+            background: linear-gradient(90deg, rgba(240, 147, 251, 0.2) 0%, rgba(245, 87, 108, 0.3) 100%);
+            border-color: #f5576c;
+            color: #8a4a5c;
+        }
+
+        .period-band-icon {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+
+        .period-band-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .period-band-title {
+            font-weight: bold;
+        }
+
+        .period-band-character {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 10px;
+            font-size: 0.85em;
+        }
+
+        .period-band-days {
+            background: #333;
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            white-space: nowrap;
+        }
+
+        .period-band-note {
+            font-size: 0.75em;
+            font-weight: normal;
+            color: #666;
+            margin-left: 15px;
+        }
+
+        .unwritten {
+            background: #ffeb3b;
+            color: #000;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.7em;
+            margin-right: 3px;
+        }
+
+        .section-divider {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 12px;
+            font-weight: bold;
+            color: #f5576c;
+            border-top: 2px dashed #ddd;
+            margin-top: 8px;
+        }
+
+        .unwritten-section {
+            background: #fff3cd;
+            border: 2px dashed #ffc107;
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 2200px;
+            border-radius: 10px;
+        }
+
+        .unwritten-section h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ffeeba;
+            padding-bottom: 5px;
+        }
+
+        .unwritten-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .unwritten-list li {
+            margin-bottom: 5px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .unwritten-list li::before {
+            content: "📝";
+            position: absolute;
+            left: 0;
+        }
+
+        /* 備考欄 */
+        .memo-section {
+            max-width: 2200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .memo-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        #memoArea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            font-size: 14px;
+            font-family: 'Segoe UI', 'Hiragino Sans', sans-serif;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        #memoArea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .memo-status {
+            text-align: right;
+            font-size: 0.85em;
+            color: #28a745;
+            margin-top: 8px;
+        }
+
+        .memo-status.saving {
+            color: #ffc107;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>📚 マンガ マスター時間軸</h1>
+
+    <div class="timeline-grid">
+        <!-- ヘッダー行 -->
+        <div class="row">
+            <div class="header header-main">🐻 本編<br><small>クマ(37) マコト(36) カク(39)<br>社長(50) 征士郎(68) うしお(20)
+                    マル(38)</small></div>
+            <div class="header header-summer">🌻 夏の罠<br><small>夏野(56) カズ(33) スミス(33) ジロー(32)<br>ナツオ(20) 社長(50) 征士郎(68)
+                    校長(56)</small></div>
+            <div class="header header-tank">🚚 タンク<br><small>タンク(44) だるま(35)<br>所長(50) ナツオ(20)</small></div>
+            <div class="header header-professor">🎓 教授/監督<br><small>教授(52) カントク(40)<br>チンピラ風の男(30)</small></div>
+            <div class="header header-principal">👹 校長/芋黒<br><small>校長(56) 芋黒先生(31)<br>教頭(不明)</small></div>
+            <div class="header header-shotaro">👮 正太郎<br><small>正太郎(35) トク(45)</small></div>
+            <div class="header header-day">Day</div>
+        </div>
+
+        <!-- 過去セクション -->
+        <div class="section-divider">──── 本編より前の時間軸【過去】日付不明 ────</div>
+
+        <div class="row">
+            <div class="cell"></div>
+            <div class="cell">
+                <div class="event past">
+                    <div class="event-title">① カズ×男たち（撮影）</div>
+                    <div class="event-desc">スミス（セフレ）が撮影</div>
+                    <span class="event-source">📖 夏の罠 P11-P13</span>
+                </div>
+                <div class="event past">
+                    <div class="event-title"><span class="unwritten">未執筆</span>② スミス×夏野 挨拶</div>
+                    <div class="event-desc">「今度ジロー連れてくる」</div>
+                    <span class="event-source">📖 夏の罠 P14</span>
+                </div>
+                <div class="event past">
+                    <div class="event-title">⑤ 秘密の箱を渡す</div>
+                    <div class="event-desc">征士郎から夏野へ<br>「必要な時が来る」と渡される</div>
+                    <span class="event-source">📖 夏の罠 P08</span>
+                </div>
+                <div class="event past">
+                    <div class="event-title">④ カズ×ジロー セックス</div>
+                    <div class="event-desc">③を回想中</div>
+                    <span class="event-source">📖 夏の罠 P8-P9</span>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="event past">
+                    <div class="event-title">ナツオ×所長（過去）</div>
+                    <div class="event-desc">ナツオが所長を調教<br>動画撮影、汁を集める</div>
+                    <span class="event-source">📖 たんくのおしごと（回想）</span>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="event past">
+                    <div class="event-title">教授×チンピラ風の男</div>
+                    <div class="event-desc">監禁・乳首調教<br>「パパ」と呼ばせる<br>「お兄ちゃんたち」の存在</div>
+                    <span class="event-source">📖 教授の日常 P1-P5</span>
+                </div>
+                <div class="event past">
+                    <div class="event-title">教授×カントク（セフレ関係）</div>
+                    <div class="event-desc">40歳現場監督、既婚4児のパパ<br>教授「界雈で有名なハッテン公園です。一緒に行きませんか？」<br>→クマと爷２公園へ</div>
+                    <span class="event-source">📖 クマと爷２（回想）</span>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="event past">
+                    <div class="event-title">校長×教頭×芋黒先生</div>
+                    <div class="event-desc">「密告」で呼び出し<br>足汁・アナル調教<br>※密告は芋黒本人</div>
+                    <span class="event-source">📖 でびる校長 P1-P5</span>
+                </div>
+                <div class="event past">
+                    <div class="event-title">芋黒「本命までの暇つぶし」</div>
+                    <div class="event-desc">芋黒の真の目的は別</div>
+                    <span class="event-source">📖 でびる校長 P5</span>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="event past">
+                    <div class="event-title">トク×正太郎（警察仮眠室）</div>
+                    <div class="event-desc">秘密の関係<br>正太郎の片思い</div>
+                    <span class="event-source">📖 正太郎とトク P1-P5</span>
+                </div>
+                <div class="event past">
+                    <div class="event-title">トク→正太郎「突然の別れと試練」</div>
+                    <div class="event-desc">クマと爺2の回想で描写<br>※クマと爺1(Day 0)より前の出来事</div>
+                    <span class="event-source">📖 クマと爺2（回想）</span>
+                </div>
+            </div>
+            <div class="cell-day">
+                <div class="day-marker">過去</div>
+            </div>
+        </div>
+
+        <!-- 本編と同期する時間軸 -->
+        <div class="section-divider">──── 本編と同期する時間軸 ────</div>
+
+        <!-- Day 0 -->
+        <div class="row">
+            <div class="cell">
+                <div class="event main">
+                    <div class="event-title">クマと爺の初対面</div>
+                    <div class="event-desc">一晩の調教</div>
+                    <span class="event-source">📖 クマと爺1</span>
+                </div>
+            </div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell-day">
+                <div class="day-marker highlight">Day 0</div>
+            </div>
+        </div>
+
+        <!-- Day 20 -->
+        <div class="row">
+            <div class="cell">
+                <div class="event main">
+                    <div class="event-title">征士郎×マコト 接触</div>
+                    <div class="event-desc">「同じニオイがする」</div>
+                    <span class="event-source">📖 クマと後輩</span>
+                </div>
+            </div>
+            <div class="cell"></div>
+            <div class="cell">
+                <div class="event tank">
+                    <div class="event-title">タンク×だるま×ナツオ捕獲</div>
+                    <div class="event-desc">信号無視のナツオを捕まえる<br>所長の動画を見る</div>
+                    <span class="event-source">📖 たんくのおしごと P1-P6</span>
+                </div>
+            </div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell-day">
+                <div class="day-marker">Day 20</div>
+            </div>
+        </div>
+
+        <!-- Day 25 -->
+        <div class="row">
+            <div class="cell"></div>
+            <div class="cell">
+                <div class="event summer">
+                    <div class="event-title">⑤ 征士郎×夏野×ナツオ</div>
+                    <div class="event-desc">愛と棘でSMプレイ<br>秘密の箱を渡す<br>※同日：社長×カク</div>
+                    <span class="event-source">📖 夏の罠 P1-P7</span>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="event tank">
+                    <div class="event-title">タンク×だるま×ナツオ×所長</div>
+                    <div class="event-desc">「愛の棘」で所長を調教<br>※夏の罠と同日同場所</div>
+                    <span class="event-source">📖 たんくのおしごと P7-P10</span>
+                </div>
+            </div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell-day">
+                <div class="day-marker highlight">Day 25</div>
+            </div>
+        </div>
+
+        <!-- Day 31 -->
+        <div class="row">
+            <div class="cell">
+                <div class="event main">
+                    <div class="event-title">クマと後輩</div>
+                    <div class="event-desc">マコト×うしお×クマ<br>征士郎に動画送信<br>翌朝クマ再捕獲</div>
+                    <span class="event-source">📖 クマと後輩 / クマと爺2</span>
+                </div>
+                <div class="event main">
+                    <div class="event-title">クマ監禁開始</div>
+                    <div class="event-desc">監禁調教開始</div>
+                    <span class="event-source">📖 クマと爺2</span>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="event summer">
+                    <div class="event-title"><span class="unwritten">未執筆</span>社長が覗くシーン</div>
+                    <div class="event-desc">3人気絶→社長が鍵を開ける<br>→征士郎とカク入室可能に</div>
+                    <span class="event-source">📖 夏の罠（予定）</span>
+                </div>
+            </div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell-day">
+                <div class="day-marker highlight">Day 31</div>
+            </div>
+        </div>
+
+        <!-- 期間帯: クマ監禁（本編列のみ） -->
+        <div class="row">
+            <div class="cell" style="padding: 4px;">
+                <div class="period-band main">
+                    <div class="period-band-info">
+                        <span class="period-band-icon">🔒</span>
+                        <span class="period-band-title">監禁調教</span>
+                        <span class="period-band-character">クマ</span>
+                    </div>
+                    <span class="period-band-days">Day 31〜43</span>
+                </div>
+            </div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell-day"></div>
+        </div>
+
+        <!-- Day 43 -->
+        <div class="row">
+            <div class="cell"></div>
+            <div class="cell">
+                <div class="event summer">
+                    <div class="event-title"><span class="unwritten">未執筆</span>⑥ バリカンギャグ【前日】</div>
+                    <div class="event-desc">秘密の箱の中身が判明<br>夏野が坊主に、カクから連絡</div>
+                    <span class="event-source">📖 夏の罠 P14</span>
+                </div>
+                <div class="event summer">
+                    <div class="event-title"><span class="unwritten">未執筆</span>夏野からの連絡</div>
+                    <div class="event-desc">常連客スミスへ連絡<br>カズと待ち合わせるが遅刻<br>カズは一人で公園へ</div>
+                    <span class="event-source">📖 夏の罠（予定）</span>
+                </div>
+            </div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell">
+                <div class="event principal">
+                    <div class="event-title"><span class="unwritten">未執筆</span>校長→芋黒へメール</div>
+                    <div class="event-desc">「面白い公園があるらしい」<br>征士郎から聞いた情報を共有<br>芋黒が公園に行くきっかけ</div>
+                    <span class="event-source">📖 夏の罠（予定）</span>
+                </div>
+            </div>
+            <div class="cell"></div>
+            <div class="cell-day">
+                <div class="day-marker">Day 43</div>
+            </div>
+        </div>
+
+        <!-- Day 44 -->
+        <div class="row">
+            <div class="cell">
+                <div class="event main">
+                    <div class="event-title">クマと爺2【公園開始】</div>
+                    <div class="event-desc">「2週間後 深夜0時」<br>某ハッテン公園</div>
+                    <span class="event-source">📖 クマと爺2</span>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="event summer">
+                    <div class="event-title">⑦ クマと爺2へ接続</div>
+                    <div class="event-desc">ジロー「ココくるの久しぶりだべ」<br>→愛と棘へ</div>
+                    <span class="event-source">📖 クマと爺2</span>
+                </div>
+                <div class="event summer">
+                    <div class="event-title"><span class="unwritten">未執筆</span>スミスとカズの遭遇</div>
+                    <div class="event-desc">スミス遅刻でカズと合流できず<br>カズ単独で社長と遭遇</div>
+                    <span class="event-source">📖 夏の罠（予定）</span>
+                </div>
+                <div class="event summer">
+                    <div class="event-title"><span class="unwritten">未執筆</span>ナツオの勤務</div>
+                    <div class="event-desc">ホテルで通常勤務中<br>所長が来店し感想を言う<br>「この前のは良かった」</div>
+                    <span class="event-source">📖 夏の罠（予定）</span>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="event tank">
+                    <div class="event-title"><span class="unwritten">未執筆</span>所長の来店</div>
+                    <div class="event-desc">ナツオの店に来店<br>「あの時の凄かった、またやってよ」<br>※相手がタンクだとは知らない</div>
+                    <span class="event-source">📖 夏の罠（予定）</span>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="event professor">
+                    <div class="event-title"><span class="unwritten">未執筆</span>教授が公園で子供探し</div>
+                    <div class="event-desc">新しい「パパの子」を探しに</div>
+                    <span class="event-source">📖 夏の罠（予定）</span>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="event principal">
+                    <div class="event-title"><span class="unwritten">未執筆</span>校長の新おもちゃ紹介</div>
+                    <div class="event-desc">「新しいおもちゃもいます」<br>※新おもちゃ＝芨黒先生</div>
+                    <span class="event-source">📖 夏の罠（予定）</span>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="event shotaro">
+                    <div class="event-title"><span class="unwritten">未執筆</span>正太郎×トク 再会？</div>
+                    <div class="event-desc">「突然の別れと試練」の後</div>
+                    <span class="event-source">📖 正太郎とトク（続編）</span>
+                </div>
+            </div>
+            <div class="cell-day">
+                <div class="day-marker highlight">Day 44</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 完全未着手・構想中リスト -->
+    <div class="unwritten-section">
+        <h3>🚧 完全未着手・構想中リスト</h3>
+        <ul class="unwritten-list">
+            <li><strong>カクとマルの関係</strong>：過去の関係性、なぜカクがマルと関わりがあるのか</li>
+            <li><strong>爺とカク（好六の息子）の出会い</strong>：養子入りの経緯、従者となるまで</li>
+            <li><strong>なぜターゲットとしてクマを選んだのか</strong>：爺がクマに固執する真の理由</li>
+            <li><strong>ナツオのパパ×うしお（VR展開）</strong>：ナツオとうしおは友人。エンジニアのパパが自作VRでうしおと…</li>
+            <li><strong>【先生と夏陰 後編】</strong></li>
+            <li><strong>【父と白鳥 後編】</strong></li>
+            <li><strong>クマの借金の真相</strong>：なぜクマは多額の借金を背負ったのか</li>
+            <li><strong>教授の「お兄ちゃんたち」</strong>：チンピラ風の男以外のコレクション（構想中）</li>
+            <li><strong>芋黒先生の本命</strong>：彼が本当に狙っている相手は誰なのか</li>
+            <li><strong>社長の正体</strong>：大隈組「ボン」の孫、大隈プロレスリング社長としての顔</li>
+            <li><strong>ミニゲーム・ゲーム化構想</strong>：このキャラクターたちを使ったゲームを作る計画</li>
+            <li><strong>マルの師匠＝白也</strong>：マルのいた相撲部屋の親方は「白也」（父と白鳥）である</li>
+        </ul>
+    </div>
+
+    <!-- 備考欄セクション -->
+    <div class="memo-section">
+        <h2>📝 備考欄（メモ）</h2>
+        <textarea id="memoArea" placeholder="ここにメモを書いてください。自動保存されます。"></textarea>
+        <div class="memo-status" id="memoStatus">保存済み ✓</div>
+    </div>
+
+    <script>
+        const memoArea = document.getElementById('memoArea');
+        const memoStatus = document.getElementById('memoStatus');
+        const STORAGE_KEY = 'manga_master_timeline_memo';
+
+        // ページ読み込み時に保存されたメモを復元
+        window.addEventListener('load', () => {
+            const savedMemo = localStorage.getItem(STORAGE_KEY);
+            if (savedMemo) {
+                memoArea.value = savedMemo;
+            }
+        });
+
+        // 入力時に自動保存（500ms後）
+        let saveTimeout;
+        memoArea.addEventListener('input', () => {
+            memoStatus.textContent = '保存中...';
+            memoStatus.classList.add('saving');
+
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                localStorage.setItem(STORAGE_KEY, memoArea.value);
+                memoStatus.textContent = '保存済み ✓';
+                memoStatus.classList.remove('saving');
+            }, 500);
+        });
+    </script>
+</body>
+
+</html>
