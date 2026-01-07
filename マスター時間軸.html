@@ -35,10 +35,10 @@
             color: #555;
         }
 
-        /* 7列構造: 本編 | 夏の罠 | タンク | 教授 | 校長 | 正太郎 | Day */
+        /* 7列構造: Day | 本編 | 夏の罠 | タンク | 教授 | 校長 | 正太郎 */
         .timeline-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 80px;
+            grid-template-columns: 80px 1fr 1fr 1fr 1fr 1fr 1fr;
             max-width: 2200px;
             margin: 0 auto;
             gap: 6px;
@@ -364,24 +364,171 @@
         .memo-status.saving {
             color: #ffc107;
         }
+
+        /* 登場人物年齢サイドバー */
+        .character-sidebar {
+            position: fixed;
+            right: 10px;
+            top: 80px;
+            width: 160px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            padding: 10px;
+            font-size: 0.75em;
+            z-index: 1000;
+        }
+
+        .character-sidebar h3 {
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .char-group {
+            margin-bottom: 8px;
+        }
+
+        .char-group-title {
+            font-weight: bold;
+            font-size: 0.85em;
+            padding: 3px 6px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            color: #fff;
+        }
+
+        .char-group-title.main {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .char-group-title.summer {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .char-group-title.tank {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .char-group-title.professor {
+            background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+        }
+
+        .char-group-title.principal {
+            background: linear-gradient(135deg, #c31432 0%, #240b36 100%);
+        }
+
+        .char-group-title.shotaro {
+            background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+        }
+
+        .char-list {
+            list-style: none;
+            padding-left: 5px;
+        }
+
+        .char-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            border-bottom: 1px dotted #eee;
+        }
+
+        .char-name {
+            color: #333;
+        }
+
+        .char-age {
+            font-weight: bold;
+            color: #666;
+        }
     </style>
 </head>
 
 <body>
+    <!-- 登場人物年齢サイドバー -->
+    <div class="character-sidebar">
+        <h3>👤 登場人物 年齢</h3>
+
+        <div class="char-group">
+            <div class="char-group-title main">🐻 本編</div>
+            <ul class="char-list">
+                <li><span class="char-name">クマ</span><span class="char-age">37</span></li>
+                <li><span class="char-name">マコト</span><span class="char-age">36</span></li>
+                <li><span class="char-name">カク</span><span class="char-age">39</span></li>
+                <li><span class="char-name">社長</span><span class="char-age">50</span></li>
+                <li><span class="char-name">征士郎</span><span class="char-age">68</span></li>
+                <li><span class="char-name">うしお</span><span class="char-age">18</span></li>
+                <li><span class="char-name">マル</span><span class="char-age">38</span></li>
+            </ul>
+        </div>
+
+        <div class="char-group">
+            <div class="char-group-title summer">🌻 夏の罠</div>
+            <ul class="char-list">
+                <li><span class="char-name">夏野</span><span class="char-age">56</span></li>
+                <li><span class="char-name">カズ</span><span class="char-age">33</span></li>
+                <li><span class="char-name">スミス</span><span class="char-age">33</span></li>
+                <li><span class="char-name">ジロー</span><span class="char-age">32</span></li>
+                <li><span class="char-name">ナツオ</span><span class="char-age">18</span></li>
+            </ul>
+        </div>
+
+        <div class="char-group">
+            <div class="char-group-title tank">🚚 タンク</div>
+            <ul class="char-list">
+                <li><span class="char-name">タンク</span><span class="char-age">44</span></li>
+                <li><span class="char-name">だるま</span><span class="char-age">35</span></li>
+                <li><span class="char-name">所長</span><span class="char-age">50</span></li>
+            </ul>
+        </div>
+
+        <div class="char-group">
+            <div class="char-group-title professor">🎓 教授/監督</div>
+            <ul class="char-list">
+                <li><span class="char-name">教授</span><span class="char-age">52</span></li>
+                <li><span class="char-name">カントク</span><span class="char-age">40</span></li>
+                <li><span class="char-name">チンピラ風</span><span class="char-age">30</span></li>
+            </ul>
+        </div>
+
+        <div class="char-group">
+            <div class="char-group-title principal">👹 校長/芋黒</div>
+            <ul class="char-list">
+                <li><span class="char-name">校長</span><span class="char-age">56</span></li>
+                <li><span class="char-name">芋黒先生</span><span class="char-age">31</span></li>
+                <li><span class="char-name">教頭</span><span class="char-age">不明</span></li>
+            </ul>
+        </div>
+
+        <div class="char-group">
+            <div class="char-group-title shotaro">👮 正太郎</div>
+            <ul class="char-list">
+                <li><span class="char-name">正太郎</span><span class="char-age">35</span></li>
+                <li><span class="char-name">トク</span><span class="char-age">45</span></li>
+            </ul>
+        </div>
+    </div>
     <h1>📚 マンガ マスター時間軸</h1>
 
     <div class="timeline-grid">
         <!-- ヘッダー行 -->
         <div class="row">
-            <div class="header header-main">🐻 本編<br><small>クマ(37) マコト(36) カク(39)<br>社長(50) 征士郎(68) うしお(20)
+            <div class="header header-day">Day</div>
+            <div class="header header-main">🐻 本編<br><small>クマ(37) マコト(36) カク(39)<br>社長(50) 征士郎(68) うしお(18)
                     マル(38)</small></div>
             <div class="header header-summer">🌻 夏の罠<br><a href="./06ショートストーリー/夏の罠_セリフ一覧.html" class="manga-link-btn">📖
                     原本を読む</a><br><small>夏野(56) カズ(33) スミス(33)
-                    ジロー(32)<br>ナツオ(20) 社長(50) 征士郎(68)
+                    ジロー(32)<br>ナツオ(18) 社長(50) 征士郎(68)
                     校長(56)</small></div>
             <div class="header header-tank">🚚 タンク<br><a href="./06ショートストーリー/たんくのおしごと_セリフ一覧.html"
                     class="manga-link-btn">📖 原本を読む</a><br><small>タンク(44) だるま(35)<br>所長(50)
-                    ナツオ(20)</small></div>
+                    ナツオ(18)</small></div>
             <div class="header header-professor">🎓 教授/監督<br><a href="./06ショートストーリー/教授の日常_セリフ一覧.html"
                     class="manga-link-btn">📖 原本を読む</a><br><small>教授(52)
                     カントク(40)<br>チンピラ風の男(30)</small></div>
@@ -390,13 +537,15 @@
             </div>
             <div class="header header-shotaro">👮 正太郎<br><a href="./06ショートストーリー/正太郎くんとトクさん_セリフ一覧.html"
                     class="manga-link-btn">📖 原本を読む</a><br><small>正太郎(35) トク(45)</small></div>
-            <div class="header header-day">Day</div>
         </div>
 
         <!-- 過去セクション -->
         <div class="section-divider">──── 本編より前の時間軸【過去】日付不明 ────</div>
 
         <div class="row">
+            <div class="cell-day">
+                <div class="day-marker">過去</div>
+            </div>
             <div class="cell"></div>
             <div class="cell">
                 <div class="event past">
@@ -463,9 +612,6 @@
                     <span class="event-source">📖 クマと爺2（回想）</span>
                 </div>
             </div>
-            <div class="cell-day">
-                <div class="day-marker">過去</div>
-            </div>
         </div>
 
         <!-- 本編と同期する時間軸 -->
@@ -473,6 +619,9 @@
 
         <!-- Day 0 -->
         <div class="row">
+            <div class="cell-day">
+                <div class="day-marker highlight">Day 0</div>
+            </div>
             <div class="cell">
                 <div class="event main">
                     <div class="event-title">クマと爺の初対面</div>
@@ -485,13 +634,13 @@
             <div class="cell"></div>
             <div class="cell"></div>
             <div class="cell"></div>
-            <div class="cell-day">
-                <div class="day-marker highlight">Day 0</div>
-            </div>
         </div>
 
         <!-- Day 20 -->
         <div class="row">
+            <div class="cell-day">
+                <div class="day-marker">Day 20</div>
+            </div>
             <div class="cell">
                 <div class="event main">
                     <div class="event-title">征士郎×マコト 接触</div>
@@ -510,13 +659,13 @@
             <div class="cell"></div>
             <div class="cell"></div>
             <div class="cell"></div>
-            <div class="cell-day">
-                <div class="day-marker">Day 20</div>
-            </div>
         </div>
 
         <!-- Day 25 -->
         <div class="row">
+            <div class="cell-day">
+                <div class="day-marker highlight">Day 25</div>
+            </div>
             <div class="cell"></div>
             <div class="cell">
                 <div class="event summer">
@@ -535,13 +684,13 @@
             <div class="cell"></div>
             <div class="cell"></div>
             <div class="cell"></div>
-            <div class="cell-day">
-                <div class="day-marker highlight">Day 25</div>
-            </div>
         </div>
 
         <!-- Day 31 -->
         <div class="row">
+            <div class="cell-day">
+                <div class="day-marker highlight">Day 31</div>
+            </div>
             <div class="cell">
                 <div class="event main">
                     <div class="event-title">クマと後輩</div>
@@ -565,13 +714,11 @@
             <div class="cell"></div>
             <div class="cell"></div>
             <div class="cell"></div>
-            <div class="cell-day">
-                <div class="day-marker highlight">Day 31</div>
-            </div>
         </div>
 
         <!-- 期間帯: クマ監禁（本編列のみ） -->
         <div class="row">
+            <div class="cell-day"></div>
             <div class="cell" style="padding: 4px;">
                 <div class="period-band main">
                     <div class="period-band-info">
@@ -587,11 +734,13 @@
             <div class="cell"></div>
             <div class="cell"></div>
             <div class="cell"></div>
-            <div class="cell-day"></div>
         </div>
 
         <!-- Day 43 -->
         <div class="row">
+            <div class="cell-day">
+                <div class="day-marker">Day 43</div>
+            </div>
             <div class="cell"></div>
             <div class="cell">
                 <div class="event summer">
@@ -615,13 +764,13 @@
                 </div>
             </div>
             <div class="cell"></div>
-            <div class="cell-day">
-                <div class="day-marker">Day 43</div>
-            </div>
         </div>
 
         <!-- Day 44 -->
         <div class="row">
+            <div class="cell-day">
+                <div class="day-marker highlight">Day 44</div>
+            </div>
             <div class="cell">
                 <div class="event main">
                     <div class="event-title">クマと爺2【公園開始】</div>
@@ -673,9 +822,6 @@
                     <div class="event-desc">「突然の別れと試練」の後</div>
                     <span class="event-source">📖 正太郎とトク（続編）</span>
                 </div>
-            </div>
-            <div class="cell-day">
-                <div class="day-marker highlight">Day 44</div>
             </div>
         </div>
     </div>
